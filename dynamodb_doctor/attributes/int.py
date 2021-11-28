@@ -3,10 +3,12 @@ from .exceptions import AttributeValidationError
 
 class Int(Attribute):
     def set(self, value):
-        if not isinstance(int(value), int):
-            raise AttributeValidationError()
+        try:
+            int(value)
+        except TypeError:
+            raise AttributeValidationError()            
 
-        self.value = value
+        self.value = int(value)
 
     def get(self):
         return self.value

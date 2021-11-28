@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 aioboto3 = "*"
+ksuid = "*"
 
 [dev-packages]
 pytest = "*"

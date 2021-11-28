@@ -13,3 +13,6 @@ class String(Attribute):
 
     def __repr__(self) -> str:
         return self.get()
+
+    def __eq__(self, other) -> bool:
+        return self.get() == other

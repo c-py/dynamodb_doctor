@@ -1,5 +1,5 @@
 class DynamoDBDoctorAttributeException(Exception):
     ...
 
-class AttributeValidationError(Exception):
+class AttributeValidationError(DynamoDBDoctorAttributeException):
     ...

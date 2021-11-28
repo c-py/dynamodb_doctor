@@ -4,7 +4,7 @@
 
 ## Installation
 
-`pipenv install --dev`
+`make install`
 
 ## Testing
 

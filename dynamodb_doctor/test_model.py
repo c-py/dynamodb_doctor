@@ -1,7 +1,6 @@
 import pytest 
-import aioboto3
 
-from dynamodb_doctor import Model, String, ModelCreationException, MissingAttributeException
+from dynamodb_doctor import Model, String, ModelCreationException, Many
 
 ENDPOINT_URL = "http://localhost:58000"
 
@@ -11,40 +10,6 @@ async def test_define_model_without_table():
         class _(Model):
             name = String()
 
-
-@pytest.mark.asyncio
-async def test_save_model_with_string_attribute(table_fixture):
-    test_model_name = "test_model"
-
-    class TestModel(Model):
-        name = String()
-
-        class Meta:
-            table = table_fixture
-
-    test_model = TestModel(name=test_model_name)
-
-    await test_model.save()
-
-    session = aioboto3.Session()
-    async with session.resource('dynamodb', endpoint_url=ENDPOINT_URL) as resource:
-        table = await resource.Table(table_fixture._name)
-
-        item = await table.get_item(Key={"pk": test_model._pk, "sk": test_model._sk})
-
-        assert("Item" in item)
-        assert(item["Item"]["name"] == test_model_name)
-
-@pytest.mark.asyncio
-async def test_save_model_without_string_attribute(table_fixture):
-    class TestModel(Model):
-        name = String()
-
-        class Meta:
-            table = table_fixture
-
-    with pytest.raises(MissingAttributeException):
-        _ = TestModel()
 
 @pytest.mark.asyncio
 async def test_list_all(table_fixture):
@@ -64,3 +29,38 @@ async def test_list_all(table_fixture):
 
     assert(len(test_models) == 1)
     assert(test_models[0].id == test_model.id)
+
+@pytest.mark.asyncio
+async def test_list_one_to_many(table_fixture):
+    class TestModelMany(Model):
+        name = String()
+
+        class Meta:
+            table = table_fixture
+
+    class TestModelOne(Model):
+        title = String()
+        many = Many(TestModelMany)
+
+        class Meta:
+            table = table_fixture
+
+    test_model_one = TestModelOne(
+        title="test",
+        many=[{"name":"testone"}, {"name":"testtwo"}]
+    )
+
+    await test_model_one.save()
+
+    test_models = await TestModelOne.all()
+
+    assert(len(test_models) == 1)
+
+    one = test_models[0]
+    assert(one.id == test_model_one.id)
+
+    many = test_models[0].many
+    assert(len(many) == 2)
+    
+    assert(many[0].name == "testone")
+    assert(many[1].name == "testtwo")

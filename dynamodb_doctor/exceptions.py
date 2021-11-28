@@ -6,3 +6,6 @@ class ModelCreationException(DynamoDBDoctorException):
 
 class MissingAttributeException(DynamoDBDoctorException):
     ...
+
+class DeserializationException(DynamoDBDoctorException):
+    ...
