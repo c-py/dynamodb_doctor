@@ -1,12 +1,11 @@
-from .attribute import Attribute
+from .attribute import Attribute, AttributeInstance
 from .exceptions import AttributeValidationError
 
-class String(Attribute):
-    def set(self, value):
-        if not isinstance(str(value), str):
-            raise AttributeValidationError()
-
-        self.value = str(value)
+class StringInstance(AttributeInstance):
+    def __init__(self, validate_fn, value):
+        self.validate_fn = validate_fn
+        self.validate_fn(value)
+        self.value = value
 
     def get(self):
         return self.value
@@ -16,3 +15,12 @@ class String(Attribute):
 
     def __eq__(self, other) -> bool:
         return self.get() == other
+
+class String(Attribute):
+    def new(self, value):
+
+        def validate_fn(v):
+            if not isinstance(str(v), str):
+                raise AttributeValidationError()
+
+        return StringInstance(validate_fn, value)

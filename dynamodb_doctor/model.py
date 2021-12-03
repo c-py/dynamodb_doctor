@@ -54,7 +54,7 @@ class Model(metaclass=ModelMeta):
             if attribute_name not in kwargs.keys():
                 raise MissingAttributeException(attribute_name)
             else:
-                attribute.set(kwargs[attribute_name])
+                setattr(self, attribute_name, attribute.new(kwargs[attribute_name]))
 
         for relationship_name, relationship in self._relationships.items():
             if relationship_name in kwargs.keys():
@@ -89,7 +89,8 @@ class Model(metaclass=ModelMeta):
         }
 
         for attribute_name, attribute in self._attributes.items():
-            item[attribute_name] = attribute.get()
+            _attr = getattr(self, attribute_name)
+            item[attribute_name] = _attr.get()
 
         for relationship in self._relationships.values():
             items.extend(relationship._serialize(prefix=prefix))

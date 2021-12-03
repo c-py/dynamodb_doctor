@@ -1,10 +1,19 @@
 from abc import ABC, abstractmethod
 
-class Attribute(ABC):
+class AttributeInstance(ABC):
     @abstractmethod
-    def set(self, value):
+    def __init__(self, validate_fn, value):
         ...
 
     @abstractmethod
-    def get(self):
+    def __repr__(self) -> str:
+        ...
+        
+    @abstractmethod
+    def __eq__(self, other) -> bool:
+        ... 
+
+class Attribute(ABC):
+    @abstractmethod
+    def new(self, value) -> AttributeInstance:
         ...

@@ -11,7 +11,7 @@ async def test_save_model_with_set_collection(table_fixture):
     test_set_of_ints = (1,2,3)
 
     class TestModel(Model):
-        set_of_ints = Set(Int)
+        set_of_ints = Set(Int())
 
         class Meta:
             table = table_fixture
