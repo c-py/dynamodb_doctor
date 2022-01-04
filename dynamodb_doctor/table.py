@@ -13,6 +13,9 @@ class TableMeta(type):
         return table
 
 class Table(metaclass=TableMeta):
+    Meta: type
+    _name: str
+
     def __init__(self):
         self._models = {}
 

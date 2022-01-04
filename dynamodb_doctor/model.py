@@ -44,6 +44,10 @@ class ModelMeta(type):
         return model
 
 class Model(metaclass=ModelMeta):
+    _table: Table  
+    _pk: str
+    _sk: str
+
     def __init__(self, **kwargs):
         if "sk" in kwargs and isinstance(kwargs["sk"], str):
             self._sk = kwargs["sk"]
@@ -60,7 +64,7 @@ class Model(metaclass=ModelMeta):
             if relationship_name in kwargs.keys():
                 relationship.set(kwargs[relationship_name])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self._serialize())
 
     @classmethod
@@ -120,7 +124,7 @@ class Model(metaclass=ModelMeta):
         return self._pk
 
     @classmethod
-    async def all(cls):
+    async def all(cls) -> ListTyping["Model"]:
         """
         Query for all instances of the model.
         """
