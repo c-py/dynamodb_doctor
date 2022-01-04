@@ -47,10 +47,19 @@ async def test_can_add_to_model_with_many_relationship(table_fixture):
             table = table_fixture
 
     test_model = TestModelB()
-    id1 = test_model.relation.add(name="number1")
-    id2 = test_model.relation.add({"name": "number2"})
+    test_model.relation.add(name="number1")
+    test_model.relation.add({"name": "number2"})
 
     await test_model.save()
+
+    test_models = await TestModelB.all()
+
+    assert(len(test_models) == 1)
+    assert(len(test_models[0].relation) == 2)
+
+    assert test_models[0].relation[0].name == "number1" 
+    assert test_models[0].relation[1].name == "number2" 
+
 
 @pytest.mark.asyncio
 async def test_model_with_many_to_attribute_relationship_fails(table_fixture):
